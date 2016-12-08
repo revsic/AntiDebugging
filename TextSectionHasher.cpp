@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include <thread>
+#include <vector>
 
 typedef struct {
 	LPVOID lpVirtualAddress;
@@ -17,35 +18,31 @@ typedef struct {
 	SECTIONINFO SectionInfo;
 } HASHSET, *PHASHSET;
 
-HMODULE GetCurrentModule() {
+int GetAllModule(std::vector<LPVOID>& modules) {
 	MODULEENTRY32W mEntry;
 	memset(&mEntry, 0, sizeof(mEntry));
 	mEntry.dwSize = sizeof(MODULEENTRY32);
 
-	HMODULE hCurrentModule = NULL;
 	DWORD curPid = GetCurrentProcessId();
 
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, NULL);
 	if (Module32FirstW(hSnapshot, &mEntry)) {
 		do {
-			if (mEntry.th32ProcessID == curPid && wcsstr(mEntry.szModule, L"exe")) {
-				hCurrentModule = mEntry.hModule;
-			}
+			modules.push_back(mEntry.modBaseAddr);
 		} while (Module32NextW(hSnapshot, &mEntry));
 	}
 
 	CloseHandle(hSnapshot);
 
-	return hCurrentModule;
-}
-
-int GetTextSectionInfo(PSECTIONINFO info) {
-	HMODULE hCurrentModule = GetCurrentModule();
-	if (hCurrentModule == NULL) {
+	if (!modules.empty()) {
 		return -1;
 	}
 
-	PIMAGE_NT_HEADERS pNtHdr = ImageNtHeader(hCurrentModule);
+	return 0;
+}
+
+int GetTextSectionInfo(LPVOID lpModBaseAddr, PSECTIONINFO info) {
+	PIMAGE_NT_HEADERS pNtHdr = ImageNtHeader(lpModBaseAddr);
 	PIMAGE_SECTION_HEADER pSectionHeader = (PIMAGE_SECTION_HEADER)(pNtHdr + 1);
 
 	LPVOID lpTextAddr = NULL;
@@ -55,7 +52,7 @@ int GetTextSectionInfo(PSECTIONINFO info) {
 		char *name = (char *)pSectionHeader->Name;
 
 		if (!strcmp(name, ".text")) {
-			info->lpVirtualAddress = (LPVOID)((DWORD64)hCurrentModule + pSectionHeader->VirtualAddress);
+			info->lpVirtualAddress = (LPVOID)((DWORD64)lpModBaseAddr + pSectionHeader->VirtualAddress);
 			info->dwSizeOfRawData = pSectionHeader->SizeOfRawData;
 			break;
 		}
@@ -106,24 +103,32 @@ void CheckTextHash(PHASHSET pHashSet) {
 	}
 }
 
-int ExitThread(std::thread& thread) {
+int ExitThreads(std::vector<std::thread *>& threads) {
 	bTerminateThread = true;
-	thread.join();
+	
+	for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+		(*iter)->join();
+		delete *iter;
+	}
 
 	return 0;
 }
 
 int main() {
-	SECTIONINFO info;
-	GetTextSectionInfo(&info);
+	std::vector<LPVOID> modules;
+	GetAllModule(modules);
 
-	DWORD64 dwRealHash = HashSection(info.lpVirtualAddress, info.dwSizeOfRawData);
-	PHASHSET pHashSet = new HASHSET;
+	std::vector<std::thread *> threads;
+	for (auto iter = modules.begin(); iter != modules.end(); ++iter) {
+		SECTIONINFO info;
+		GetTextSectionInfo(*iter, &info);
 
-	pHashSet->dwRealHash = dwRealHash;
-	pHashSet->SectionInfo = info;
+		DWORD64 dwRealHash = HashSection(info.lpVirtualAddress, info.dwSizeOfRawData);
+		PHASHSET pHashSet = new HASHSET { dwRealHash, info };
 
-	std::thread checksum(CheckTextHash, pHashSet);
+		std::thread *checksum = new std::thread(CheckTextHash, pHashSet);
+		threads.push_back(checksum);
+	}
 
 	int num1, num2;
 	printf("[*] num1 num2 : ");
@@ -132,7 +137,7 @@ int main() {
 	printf("[*] result : %d\n\n", num1 + num2);
 
 	printf("[*] wait for terminating thread..\n");
-	ExitThread(checksum);
+	ExitThreads(threads);
 
 	return 0;
 }
