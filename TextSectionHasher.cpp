@@ -34,7 +34,7 @@ int GetAllModule(std::vector<LPVOID>& modules) {
 
 	CloseHandle(hSnapshot);
 
-	if (!modules.empty()) {
+	if (modules.empty()) {
 		return -1;
 	}
 
