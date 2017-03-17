@@ -72,7 +72,7 @@ while (1) {
 
 ## VEH Checker, DR Register Resetter
 
-VEH Debugger use Vectored Exception Handler. Verify that VEH is set
+VEH Debugger use Vectored Exception Handler. Verify that VEH is set. Check the `fourth bit (ProcessUsingVEH)` of the `PEB`'s `CrossProcessFlags(+0x50)`. If ProcessUsingVEH bit is set, then VEH is being used.
 
 ```cpp
 NtQueryInformationProcess(hProcess, ProcessBasicInformation, &pbi, sizeof(pbi), &ReturnLength);
