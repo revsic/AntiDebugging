@@ -44,9 +44,7 @@ FARPROC func_DbgUiRemoteBreakin = GetProcAddress(hMod, "DbgUiRemoteBreakin");
 WriteProcessMemory(hProcess, func_DbgUiRemoteBreakin, AntiAttach, 6, NULL);
 ```
 
-Anti Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess` when the function is called.
-
-Anti Anti Attacher releases the hooked `DbgUiRemoteBreakin` function.
+Anti Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess` when the function is called. Anti Anti Attacher releases the hooked `DbgUiRemoteBreakin` function.
 
 More details on [blog](http://revsic.tistory.com/31)
 
