@@ -8,7 +8,7 @@ Anti debugging technique written in C++ language.
 
 ## Anti Attach, Anti Anti Attach
 
-Debugger attach process with DebugActiveProcess win32api.
+Debugger attach process with `DebugActiveProcess` api.
 
 ```cpp
 DebugActiveProcess(pid);
@@ -25,7 +25,7 @@ while (dbgContinue) {
 }
 ```
 
-DebugActiveProcess create Thread in debuggee process and call `DbgUiRemoteBreakin()`.
+`DebugActiveProcess` creates a thread in debuggee. Then it calls `DbgUiRemoteBreakin()` to debug process.
 
 ```cpp
 //AntiAttach
@@ -44,15 +44,15 @@ FARPROC func_DbgUiRemoteBreakin = GetProcAddress(hMod, "DbgUiRemoteBreakin");
 WriteProcessMemory(hProcess, func_DbgUiRemoteBreakin, AntiAttach, 6, NULL);
 ```
 
-Anti Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess` when the function is called. Anti Anti Attacher releases the hooked `DbgUiRemoteBreakin` function.
+Anti-Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess`. AntiAnti-Attacher releases the hooked function.
 
 More details on [blog](http://revsic.tistory.com/31)
 
 ## Text Section Hashing
 
-Debugger sets software break point by overwriting the `int 3` instruction `\xCC` in the text section.
+Debugger sets a software breakpoint by overwriting the `int 3` instruction.
 
-Hashing Text section and periodically check that the text section has changed.
+It hashes text section and periodically checks that the text section has changed.
 
 ```cpp
 while (1) {
@@ -72,7 +72,9 @@ while (1) {
 
 ## VEH Checker, DR Register Resetter
 
-VEH Debugger use Vectored Exception Handler. Verify that VEH is set. Check the `fourth bit (ProcessUsingVEH)` of the `PEB`'s `CrossProcessFlags(+0x50)`. If ProcessUsingVEH bit is set, then VEH is being used.
+VEH Debugger use Vectored Exception Handler. 
+
+It checks the `fourth bit (ProcessUsingVEH)` of the `PEB`'s `CrossProcessFlags(+0x50)`. If ProcessUsingVEH bit is set, then VEH is being used.
 
 ```cpp
 NtQueryInformationProcess(hProcess, ProcessBasicInformation, &pbi, sizeof(pbi), &ReturnLength);
@@ -91,7 +93,7 @@ else {
 }
 ```
 
-VEH Debugger usually uses Hardware Break Point. Verify that Hardware BP is set
+VEH Debugger usually uses Hardware breakpoint. Verify hardware bp is set
 
 ```cpp
 HANDLE hThread = OpenThread(THREAD_ALL_ACCESS, FALSE, tid);
