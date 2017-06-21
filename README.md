@@ -1,6 +1,6 @@
 # Anti Debugging
 
-Anti debugging technique written in C++ language.
+Anti debugging technique written in C++.
 
 - Anti Attach, Anti Anti Attach : [AntiAttach.cpp](https://github.com/revsic/AntiDebugging/blob/master/AntiAttach.cpp), [AntiAntiAttaching.cpp](https://github.com/revsic/AntiDebugging/blob/master/AntiAntiAttach.cpp)
 - Text Section Hashing : [TextSectionHasher.cpp](https://github.com/revsic/AntiDebugging/blob/master/TextSectionHasher.cpp)
@@ -74,7 +74,7 @@ while (1) {
 
 VEH Debugger use Vectored Exception Handler. 
 
-It checks the `fourth bit (ProcessUsingVEH)` of the `PEB`'s `CrossProcessFlags(+0x50)`. If ProcessUsingVEH bit is set, then VEH is being used.
+It checks the fourth bit `ProcessUsingVEH` of the PEB's `CrossProcessFlags(+0x50)`. If `ProcessUsingVEH` bit is set, then VEH is being used.
 
 ```cpp
 NtQueryInformationProcess(hProcess, ProcessBasicInformation, &pbi, sizeof(pbi), &ReturnLength);
