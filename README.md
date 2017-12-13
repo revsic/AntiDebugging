@@ -2,9 +2,9 @@
 
 Anti debugging technique written in C++.
 
-- Anti Attach, Anti Anti Attach : [AntiAttach.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/AntiAttach.cpp), [AntiAntiAttaching.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/AntiAntiAttach.cpp)
-- Text Section Hashing : [TextSectionHasher.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/TextSectionHasher.cpp)
-- VEH Checker, DR Register Resetter : [VEH_Checker.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/VEH_Checker.cpp), [DR_Register_Resetter.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/DR_Register_Resetter.cpp)
+- Anti Attach, Anti Anti Attach : [AntiAttach.cpp](Sources/AntiAttach.cpp), [AntiAntiAttaching.cpp](Sources/AntiAntiAttach.cpp)
+- Text Section Hashing : [TextSectionHasher.cpp](Sources/TextSectionHasher.cpp)
+- VEH Checker, DR Register Resetter : [VEH_Checker.cpp](Sources/VEH_Checker.cpp), [DR_Register_Resetter.cpp](Sources/DR_Register_Resetter.cpp)
 
 ## Anti Attach, Anti Anti Attach
 
