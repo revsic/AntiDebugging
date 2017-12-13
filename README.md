@@ -2,9 +2,9 @@
 
 Anti debugging technique written in C++.
 
-- Anti Attach, Anti Anti Attach : [AntiAttach.cpp](https://github.com/revsic/AntiDebugging/blob/master/AntiAttach.cpp), [AntiAntiAttaching.cpp](https://github.com/revsic/AntiDebugging/blob/master/AntiAntiAttach.cpp)
-- Text Section Hashing : [TextSectionHasher.cpp](https://github.com/revsic/AntiDebugging/blob/master/TextSectionHasher.cpp)
-- VEH Checker, DR Register Resetter : [VEH_Checker.cpp](https://github.com/revsic/AntiDebugging/blob/master/VEH_Checker.cpp), [DR_Register_Resetter.cpp](https://github.com/revsic/AntiDebugging/blob/master/DR_Register_Resetter.cpp)
+- Anti Attach, Anti Anti Attach : [AntiAttach.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/AntiAttach.cpp), [AntiAntiAttaching.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/AntiAntiAttach.cpp)
+- Text Section Hashing : [TextSectionHasher.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/TextSectionHasher.cpp)
+- VEH Checker, DR Register Resetter : [VEH_Checker.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/VEH_Checker.cpp), [DR_Register_Resetter.cpp](https://github.com/revsic/AntiDebugging/blob/master/Sources/DR_Register_Resetter.cpp)
 
 ## Anti Attach, Anti Anti Attach
 
@@ -46,7 +46,7 @@ WriteProcessMemory(hProcess, func_DbgUiRemoteBreakin, AntiAttach, 6, NULL);
 
 Anti-Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess`. AntiAnti-Attacher releases the hooked function.
 
-More details on [blog](http://revsic.tistory.com/31)
+More details on [report[KR]](AntiAttachReport/)
 
 ## Text Section Hashing
 
