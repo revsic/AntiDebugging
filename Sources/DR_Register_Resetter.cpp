@@ -23,8 +23,7 @@ DWORD GetMainThreadId(DWORD pid) {
 				if (hThread) {
 					FILETIME afTimes[4] = { 0 };
 					if (GetThreadTimes(hThread, &afTimes[0], &afTimes[1], &afTimes[2], &afTimes[3])) {
-						ULONGLONG ullTest = MAKEULONGLONG(afTimes[0].dwLowDateTime,
-							afTimes[0].dwHighDateTime);
+						ULONGLONG ullTest = MAKEULONGLONG(afTimes[0].dwLowDateTime, afTimes[0].dwHighDateTime);
 						if (ullTest && ullTest < ullMinCreateTime) {
 							ullMinCreateTime = ullTest;
 							dwMainThreadID = th32.th32ThreadID;
