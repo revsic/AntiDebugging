@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-#define DbgBreakPoint_FUNC_SIZE 2
+#define DbgBreakPoint_FUNC_SIZE 0x2
 #define DbgUiRemoteBreakin_FUNC_SIZE 0x54
 #define NtContinue_FUNC_SIZE 0x18
 
