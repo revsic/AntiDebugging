@@ -28,7 +28,7 @@ int GetAllModule(std::vector<LPVOID>& modules) {
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, NULL);
 	if (Module32FirstW(hSnapshot, &mEntry)) {
 		do {
-			modules.push_back(mEntry.modBaseAddr);
+			modules.emplace_back(mEntry.modBaseAddr);
 		} while (Module32NextW(hSnapshot, &mEntry));
 	}
 
@@ -69,13 +69,11 @@ int GetTextSectionInfo(LPVOID lpModBaseAddr, PSECTIONINFO info) {
 
 DWORD64 HashSection(LPVOID lpSectionAddress, DWORD dwSizeOfRawData) {
 	DWORD64 hash = 0;
-	PBYTE str = (PBYTE)lpSectionAddress;
-	for (int i = 0; i < dwSizeOfRawData; ++i) {
+	BYTE *str = (BYTE *)lpSectionAddress;
+	for (int i = 0; i < dwSizeOfRawData; ++i, ++str) {
 		if (*str) {
 			hash = *str + (hash << 6) + (hash << 16) - hash;
 		}
-	
-		++str;
 	}
 
 	return hash;
@@ -103,12 +101,11 @@ void CheckTextHash(PHASHSET pHashSet) {
 	}
 }
 
-int ExitThreads(std::vector<std::thread *>& threads) {
+int ExitThreads(std::vector<std::thread>& threads) {
 	bTerminateThread = true;
-	
-	for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-		(*iter)->join();
-		delete *iter;
+
+	for (auto& thread : threads) {
+		thread.join();
 	}
 
 	return 0;
@@ -118,16 +115,19 @@ int main() {
 	std::vector<LPVOID> modules;
 	GetAllModule(modules);
 
-	std::vector<std::thread *> threads;
-	for (auto iter = modules.begin(); iter != modules.end(); ++iter) {
+	std::vector<std::thread> threads;
+	threads.reserve(modules.size());
+
+	std::vector<HASHSET> hashes;
+	hashes.reserve(modules.size());
+
+	for (auto& module : modules) {
 		SECTIONINFO info;
-		GetTextSectionInfo(*iter, &info);
+		GetTextSectionInfo(module, &info);
 
 		DWORD64 dwRealHash = HashSection(info.lpVirtualAddress, info.dwSizeOfRawData);
-		PHASHSET pHashSet = new HASHSET { dwRealHash, info };
-
-		std::thread *checksum = new std::thread(CheckTextHash, pHashSet);
-		threads.push_back(checksum);
+		hashes.emplace_back(HASHSET { dwRealHash, info });
+		threads.emplace_back(std::thread(CheckTextHash, &hashes.back()));
 	}
 
 	int num1, num2;
