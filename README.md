@@ -1,6 +1,6 @@
 # Anti Debugging
 
-Anti debugging technique written in C++.
+Anti debugging techniques written in C++.
 
 - Anti Attach, Anti Anti Attach : [AntiAttach.cpp](Sources/AntiAttach.cpp), [AntiAntiAttaching.cpp](Sources/AntiAntiAttach.cpp)
 - Text Section Hashing : [TextSectionHasher.cpp](Sources/TextSectionHasher.cpp)
@@ -25,7 +25,7 @@ while (dbgContinue) {
 }
 ```
 
-`DebugActiveProcess` creates a thread in debuggee. Then it calls `DbgUiRemoteBreakin()` to debug process.
+It creates a thread in debuggee, then it calls `DbgUiRemoteBreakin()` to debug process.
 
 ```cpp
 //AntiAttach
@@ -44,15 +44,15 @@ FARPROC func_DbgUiRemoteBreakin = GetProcAddress(hMod, "DbgUiRemoteBreakin");
 WriteProcessMemory(hProcess, func_DbgUiRemoteBreakin, AntiAttach, 6, NULL);
 ```
 
-Anti-Attacher hooks `DbgUiRemoteBreakin` and redirects `DbgUiRemoteBreakin` to `ExitProcess`. AntiAnti-Attacher releases the hooked function.
+Anti-Attacher hooks `DbgUiRemoteBreakin` and redirects it to `ExitProcess`. AntiAnti-Attacher releases the hooked function.
 
-More details on [report[KR]](AntiAttachReport/)
+More details on [report[KR]](./AntiAttachReport/)
 
 ## Text Section Hashing
 
 Debugger sets a software breakpoint by overwriting the `int 3` instruction.
 
-It hashes text section and periodically checks that the text section has changed.
+It hashes text section and periodically checks that the text section has been changed.
 
 ```cpp
 while (1) {
@@ -74,7 +74,7 @@ while (1) {
 
 VEH Debugger use Vectored Exception Handler. 
 
-It checks the fourth bit `ProcessUsingVEH` of the PEB's `CrossProcessFlags(+0x50)`. If `ProcessUsingVEH` bit is set, then VEH is being used.
+It checks the fourth bit(`ProcessUsingVEH`) of the PEB's `CrossProcessFlags(+0x50)`. If `ProcessUsingVEH` bit is set, then VEH is being used.
 
 ```cpp
 NtQueryInformationProcess(hProcess, ProcessBasicInformation, &pbi, sizeof(pbi), &ReturnLength);
