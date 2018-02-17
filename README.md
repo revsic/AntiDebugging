@@ -46,7 +46,7 @@ WriteProcessMemory(hProcess, func_DbgUiRemoteBreakin, AntiAttach, 6, NULL);
 
 Anti-Attacher hooks `DbgUiRemoteBreakin` and redirects it to `ExitProcess`. AntiAnti-Attacher releases the hooked function.
 
-More details on [report[KR]](./AntiAttachReport/)
+More details on [report[KR]](https://revsic.github.io/2018/02/17/antiattacher.html)
 
 ## Text Section Hashing
 
